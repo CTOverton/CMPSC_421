@@ -1,5 +1,5 @@
 // ========== [ Globals ] ==========
-let words = ['space',
+var words = ['space',
     'earth',
     'jupiter',
     'mars',
@@ -60,14 +60,18 @@ let words = ['space',
     'sun',
     'starlight',
     'telescope'];
-let selectedWord = '';
-let guessAttempts = 0;
-let guesses = [];
-let progress = [];
-let wins = 0;
+var selectedWord = '';
+var guessAttempts = 0;
+var guesses = [];
+var progress = [];
+var wins = 0;
 
-let winmsg = 'You Survived!';
-let lossmsg = 'You Died.';
+var winmsg = 'You Survived!';
+var lossmsg = 'You Died.';
+
+// Tweaks
+var stars = 100;
+var starSize = 4;
 
 // ========== [ Events ] ==========
 
@@ -75,6 +79,23 @@ let lossmsg = 'You Died.';
 $(document).ready(function(){
     start();
     $('.modal').modal();
+
+    var draw = SVG('drawing').size('100%', '100%');
+    var ship = draw.group();
+    ship.polygon('34, 76, 34, 0, 0, 90, 34, 76').fill('#d8d5f4');
+    ship.polygon('34, 76, 34, 0, 68, 90, 34, 76').fill('#B0B0C6');
+    ship.scale(0.5, 0.5);
+
+    console.log(draw);
+
+    for (var i=0; i<stars; i++) {
+        var sx = Math.floor(Math.random()*draw.node.clientWidth);
+        var sy = Math.floor(Math.random()*draw.node.clientHeight);
+        var ssize = Math.floor(Math.random()*starSize);
+        draw.circle(ssize).fill('#d8d5f4').move(sx,sy);
+    }
+
+
 });
 
 // User Key Input
@@ -105,7 +126,7 @@ function start(){
     updateGraphic(false);
 
     $('#progress').empty();
-    for (let i=0; i<selectedWord.length; i++) {
+    for (var i=0; i<selectedWord.length; i++) {
         $('#progress').append("<div class=\"wordDisplay flow-text\"></div>");
     }
 }
@@ -119,7 +140,7 @@ function end(win){
         $('#endModal #guesses').text('Score: '+ guessAttempts);
         $('#endModal #wins').text('Wins: ' + wins);
 
-        let instance = M.Modal.getInstance($('#endModal'));
+        var instance = M.Modal.getInstance($('#endModal'));
         instance.open();
 
     } else {
@@ -129,7 +150,7 @@ function end(win){
         $('#endModal #guesses').text('');
         $('#endModal #wins').text('');
 
-        let instance = M.Modal.getInstance($('#endModal'));
+        var instance = M.Modal.getInstance($('#endModal'));
         instance.open();
 
     }
@@ -142,9 +163,9 @@ function checkInput(key){
         console.log();
         $('#keys').find(".btn:contains("+ key +")").addClass('disabled');
 
-        let correct = [];
+        var correct = [];
 
-        for (let i=0; i<selectedWord.length; i++) {
+        for (var i=0; i<selectedWord.length; i++) {
             if (key == selectedWord.charAt(i)) {
                 correct.push(i);
             }
@@ -154,7 +175,7 @@ function checkInput(key){
             console.log('Correct at: ' + correct);
 
 
-            for (let i=0; i<correct.length; i++) {
+            for (var i=0; i<correct.length; i++) {
                 progress[correct[i]] = key;
             }
             console.log('Progress: ' + progress);
@@ -163,8 +184,8 @@ function checkInput(key){
             updateGraphic(true);
 
             // Check win
-            let compare = [];
-            for (let i=0; i<selectedWord.length; i++) {
+            var compare = [];
+            for (var i=0; i<selectedWord.length; i++) {
                 compare.push(selectedWord.charAt(i));
             }
             console.log(JSON.stringify(compare) + ' | ' + JSON.stringify(progress));
@@ -180,7 +201,7 @@ function checkInput(key){
 
 function updateGraphic(correct) {
     if (correct) {
-        for (let i=0; i<progress.length; i++) {
+        for (var i=0; i<progress.length; i++) {
             if (progress[i] != null) {
                 $('.wordDisplay')[i].innerText = progress[i].toUpperCase();
             }
