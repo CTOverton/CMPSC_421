@@ -1,6 +1,7 @@
-/*.game-container {*/
-    /*margin: auto;*/
-/*}*/
+.game-container {
+    /*display: block;*/
+    /*margin: 0 auto;*/
+}
 .grid-container {
     position: absolute;
     z-index: 1;
@@ -27,6 +28,43 @@
     float: left;
     border-radius: 3px;
     background: #292929;
+    -webkit-transition: background-color 0.25s;
+    -moz-transition: background-color 0.25s;
+    -ms-transition: background-color 0.25s;
+    -o-transition: background-color 0.25s;
+    transition: background-color 0.25s;
 }
 .grid-cell:last-child {
     margin-right: 0; }
+
+.mine {
+    background: #8b1014;
+}
+
+.count0 {
+    background: #9e9e9e;
+}
+.count1 {
+    background: #5aa15d;
+}
+.count2 {
+    background: #009688;
+}
+.count3 {
+    background: #2196f3;
+}
+.count4 {
+    background: #3f51b5;
+}
+.count5 {
+    background: #673ab7;
+}
+.count6 {
+    background: #9c27b0;
+}
+.count7 {
+    background: #e91e63;
+}
+.count8 {
+    background: #ff9800;
+}
