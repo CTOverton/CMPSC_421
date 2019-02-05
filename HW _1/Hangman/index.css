@@ -9,6 +9,12 @@ html {
     color: white;
 }
 
+#fuel {
+    background-color: white;
+    height: 2px;
+    transition: width 0.5s;
+}
+
 #progress {
     height: 40px;
     display: flex;

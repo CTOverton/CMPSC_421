@@ -70,6 +70,7 @@ var winmsg = 'You Survived!';
 var lossmsg = 'You Died.';
 
 // Tweaks
+var attempts = 4;
 var stars = 100;
 var starSize = 4;
 
@@ -79,7 +80,6 @@ var starSize = 4;
 $(document).ready(function(){
     start();
     $('.modal').modal();
-
     gensvgs();
 });
 
@@ -102,7 +102,7 @@ function start(){
     // Init
     selectedWord = words[Math.floor(Math.random()*words.length)];
     console.log('Selected Word: %s', selectedWord);
-    guessAttempts = 6;
+    guessAttempts = attempts;
     guesses = [];
     progress = [];
     $('#keys .btn').removeClass('disabled');
@@ -177,9 +177,9 @@ function checkInput(key){
             if (JSON.stringify(compare)==JSON.stringify(progress)) {end(true)}
         } else {
             console.log('Incorrect');
-            updateGraphic(false);
             if (guessAttempts > 1) {guessAttempts--} else {end(false)}
             console.log('Guesses remaining: %s', guessAttempts);
+            updateGraphic(false);
         }
     }
 }
@@ -192,6 +192,7 @@ function updateGraphic(correct) {
             }
         }
     } else {
+        $('#fuel').width('' + (guessAttempts/attempts)*100 + '%');
         $('#man .container').text(guessAttempts);
     }
 }
