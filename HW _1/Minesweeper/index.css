@@ -38,7 +38,14 @@
     margin-right: 0; }
 
 .mine {
-    background: #8b1014;
+}
+
+.show {
+    background: #8b1014 !important;
+}
+
+.flag {
+    background: #ffc107;
 }
 
 .count0 {

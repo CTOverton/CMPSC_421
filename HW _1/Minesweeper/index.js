@@ -4,16 +4,26 @@ var boardSize = 100;
 
 var firstClick = true;
 
+var winmsg = 'You won!';
+var lossmsg = 'You Exploded.';
+
 // ========== [ Events ] ==========
 
 // Page Load
 $(document).ready(function(){
+    $('.modal').modal();
+    generate();
+});
+
+$('#playAgain').click(function() {
+    firstClick = true;
     generate();
 });
 
 // ========== [ Functions ] ==========
 
 function generate() {
+    $('.grid-container').empty();
 
     for (var i=0; i<Math.sqrt(boardSize); i++) {
         var row = document.createElement('div');
@@ -29,6 +39,10 @@ function generate() {
 
     $('.grid-cell').click(function() {
         sweep($(this));
+    });
+    $('.grid-cell').contextmenu(function() {
+        if ($(this).hasClass('flag')) {$(this).removeClass('flag')}
+        else {$(this).addClass('flag')}
     });
 
 }
@@ -53,7 +67,7 @@ function sweep(cell) {
         cell.gridCell = cell.index();
         if (cell.hasClass('mine')) {
             cell.isMine = true;
-            end();
+            end(false);
         } else {
             console.log('[%s,%s] %s', cell.gridRow, cell.gridCell, cell.isMine);
 
@@ -93,6 +107,25 @@ function sweep(cell) {
 
 }
 
-function end() {
-    console.log('End');
+function end(win) {
+    $('.mine').addClass('show');
+    if (win) {
+        console.log('Won');
+        wins++;
+
+        $('#endModal #title').text(winmsg);
+
+        var instance = M.Modal.getInstance($('#endModal'));
+        instance.open();
+
+    } else {
+        console.log('Lost');
+
+        $('#endModal #title').text(lossmsg);
+
+        var instance = M.Modal.getInstance($('#endModal'));
+        instance.open();
+
+    }
+
 }
