@@ -80,27 +80,7 @@ $(document).ready(function(){
     start();
     $('.modal').modal();
 
-    var draw = SVG('drawing').size('100%', '400');
-
-    for (var i=0; i<stars; i++) {
-        var sx = Math.floor(Math.random()*draw.node.clientWidth);
-        var sy = Math.floor(Math.random()*(draw.node.clientHeight*0.75));
-        var ssize = Math.floor(Math.random()*starSize);
-        draw.circle(ssize).fill('#d8d5f4').move(sx,sy);
-        //console.log('x: %s y: %s size: %s height: %s', sx, sy, ssize, draw.node.clientHeight);
-    }
-
-    var ship = draw.group();
-    ship.polygon('32 0 0 96 32 80 32 0').fill('#d8d5f4');
-    ship.polygon('32 0 64 96 32 80 32 0').fill('#b0b0c6');
-    //ship.scale(0.5, 0.5);
-    ship.center(draw.node.clientWidth/2,352);
-
-    console.log(ship);
-
-
-
-
+    gensvgs();
 });
 
 // User Key Input
@@ -214,6 +194,22 @@ function updateGraphic(correct) {
     } else {
         $('#man .container').text(guessAttempts);
     }
+}
 
+function gensvgs() {
+    var draw = SVG('drawing').size('100%', '400');
+
+    for (var i=0; i<stars; i++) {
+        var sx = Math.floor(Math.random()*draw.node.clientWidth);
+        var sy = Math.floor(Math.random()*(draw.node.clientHeight*0.75));
+        var ssize = Math.floor(Math.random()*starSize);
+        draw.circle(ssize).fill('#d8d5f4').move(sx,sy);
+        //console.log('x: %s y: %s size: %s height: %s', sx, sy, ssize, draw.node.clientHeight);
+    }
+
+    var ship = draw.group();
+    ship.polygon('32 0 0 96 32 80 32 0').fill('#d8d5f4');
+    ship.polygon('32 0 64 96 32 80 32 0').fill('#b0b0c6');
+    ship.center(draw.node.clientWidth/2,352);
 }
 
