@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Weather</title>
+    <!--Import Google Icon Font-->
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link type="text/css" rel="stylesheet" href="libs/materialize.css"  media="screen,projection"/>
+    <!--Let browser know website is optimized for mobile-->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <link rel="stylesheet" href="index.css">
+</head>
+<body>
+    <div class="container">
+        <div class="row">
+            <div class="input-field col s6">
+                <input id="zipCode" type="text" class="validate">
+                <label for="zipCode">Zip Code</label>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col s6">
+                <div class="icon" style="display:inline-block">
+                    <!--<img style="margin:1px 4px 0;" alt="Rain and Snow" src="//ssl.gstatic.com/onebox/weather/48/snow_s_rain.png" data-atf="3">-->
+                </div>
+                <div id="currentTemp" class="temp" style="display:inline-block">0</div>
+            </div>
+            <div class="col s6">
+                <p id="precipitation">Precipitation: 0%</p>
+                <p id="humidity">Humidity: 0%</p>
+                <p id="wind">Wind: 0 km/h</p>
+            </div>
+        </div>
+
+        <div id="days" class="row">
+            <!--<div class="day">-->
+                <!--<div class="title">Wed</div>-->
+                <!--<div class="icon"></div>-->
+                <!--<div class="temp">-->
+                    <!--<div class="high">0°</div>-->
+                    <!--<div class="low">-1°</div>-->
+                <!--</div>-->
+            <!--</div>-->
+        </div>
+    </div>
+<script src="libs/jquery-3.3.1.js"></script>
+<script type="text/javascript" src="libs/materialize.js"></script>
+<script src="libs/svg.js"></script>
+<script src="index.js"></script>
+</body>
+</html>

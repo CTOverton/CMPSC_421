@@ -1,0 +1,44 @@
+
+#currentTemp {
+    font-size: x-large;
+    font-weight: bold;
+}
+
+.icon {
+    display: inline-block;
+    height: 48px;
+    width: 48px;
+    background: #eeeeee;
+    border-radius: 4px;
+}
+
+.day {
+    display:inline-block;
+    text-align: center;
+    height: 90px;
+    width: 73px;
+}
+
+.day .title {
+    display: block;
+    padding-top: 7px;
+    line-height: 15px;
+}
+
+.day .temp {
+    display: block;
+    line-height: 15px;
+    font-size: 13px;
+    text-align: center;
+}
+
+.day .temp .high {
+    display: inline-block;
+    padding-right: 5px;
+    font-weight: bold;
+}
+
+.day .temp .low {
+    display: inline-block;
+    padding-right: 5px;
+}
