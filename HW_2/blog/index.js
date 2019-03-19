@@ -1,4 +1,5 @@
 let postNumber = 25;
+let commentNumber = 42;
 let body = document.getElementById('body');
 
 $(document).ready(function() {
@@ -27,8 +28,9 @@ function render() {
     let posts = getData('posts');
     let users = getData('users');
     let photos = getData('photos');
+    let comments = getData('comments');
 
-    Promise.all([posts, users, photos]).then(function(values){
+    Promise.all([posts, users, photos, comments]).then(function(values){
         console.log(values);
         let rowcount = 0;
         let currentRow = null;
@@ -68,11 +70,22 @@ function render() {
            let card_content = createEl('div', 'card-content','', card);
            createEl('p', '',values[0][i].body, card_content);
            let card_action = createEl('div', 'card-action','', card);
-           createEl('a', 'card-action','View Full Post', card_action);
+           createEl('a', 'card-action','Back', card_action);
 
            let row2 = createEl('div', 'row','', body);
-           let ul = createEl('ul', 'row','', body);
-       })
+           let ul = createEl('ul', 'collection','', row2);
+
+           for(let i=0; i<commentNumber; i++) {
+               let li = createEl('li', 'collection-item','', ul);
+               createEl('span', 'title',values[3][i].email, li);
+               createEl('p', 'title',values[3][i].body, li);
+
+           }
+           $('a').click(function (el) {
+               render();
+           });
+
+       });
 
     });
 
