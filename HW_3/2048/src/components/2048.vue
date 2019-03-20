@@ -40,28 +40,102 @@
         </div>
       </v-layout>
 
-      <v-flex xs12>
-      <!--<button v-on:click="addTile()">Add a tile</button>-->
-      <p>Score {{ score }}</p>
-      </v-flex>
+      <!-- Top Scores List -->
+      <v-layout row>
+        <v-flex xs12>
+
+          <p>Score {{ score }}</p>
+
+          <v-form
+                  ref="form"
+          >
+            <v-text-field
+                    v-model="name"
+                    label="Name"
+            ></v-text-field>
 
 
+            <v-btn
+                    color="info"
+                    @click="newGame"
+            >
+              New Game
+            </v-btn>
+            <v-btn
+                    color="info"
+                    @click="saveScore"
+            >
+              Save Score
+            </v-btn>
+          </v-form>
 
+            <v-list two-line subheader>
+              <v-subheader inset>Top Scores</v-subheader>
+
+              <v-list-tile
+                      v-for="item in items"
+                      :key="item.name"
+                      @click=""
+              >
+
+                <v-list-tile-content>
+                  <v-list-tile-title>{{ item.name }}</v-list-tile-title>
+                  <v-list-tile-sub-title>{{ item.score }}</v-list-tile-sub-title>
+                </v-list-tile-content>
+
+
+              </v-list-tile>
+            </v-list>
+        </v-flex>
+      </v-layout>
     </v-layout>
   </v-container>
 </template>
 
 <script>
 
+  import firebase from 'firebase';
+
+  // Initialize Firebase
+  let config = {
+    apiKey: "AIzaSyCAE641Q4bEEQf8nkqOlr0h9dk8iWh-1Ew",
+    authDomain: "cmpsc421-hw1.firebaseapp.com",
+    databaseURL: "https://cmpsc421-hw1.firebaseio.com",
+    projectId: "cmpsc421-hw1",
+    storageBucket: "cmpsc421-hw1.appspot.com",
+    messagingSenderId: "177821847281"
+  };
+  firebase.initializeApp(config);
+  const db = firebase.firestore();
+
   export default {
     data: function() {
       return {
         score: 0,
+        name: '',
+        docRefId: null,
         cells: [
           [null, null, null, null],
           [null, null, null, null],
           [null, null, null, null],
           [null, null, null, null]
+        ],
+        items: [
+          /*{
+            name: 'Christian',
+            score: 2048,
+            date: 'time'
+          },
+          {
+            name: 'Person 2',
+            score: 208,
+            date: 'time'
+          },
+          {
+            name: 'Person 3',
+            score: 20,
+            date: 'time'
+          }*/
         ]
       };
     },
@@ -230,8 +304,26 @@
         }
         this.addTile();
         this.updateGrid(cells);
+      },
+      saveScore: function () {
+        let that = this;
+        db.collection("hw_3").add({
+          name: this.name,
+          score: this.score
+        }).then(function(docRef) {
+          console.log("Document written with ID: ", docRef.id);
+          that.docRefId = docRef.id;
+        });
       }
-
+    },
+    watch: {
+      score: function (val) {
+        if (this.docRefId != null) {
+          db.collection("hw_3").doc(this.docRefId).set({
+            score: val
+          }, { merge: true });
+        }
+      },
     },
     mounted: function () {
       this.$nextTick(function () {
@@ -246,14 +338,14 @@
             39: 1, // Right
             40: 2, // Down
             37: 3, // Left
-            75: 0, // Vim up
-            76: 1, // Vim right
-            74: 2, // Vim down
-            72: 3, // Vim left
-            87: 0, // W
-            68: 1, // D
-            83: 2, // S
-            65: 3  // A
+            // 75: 0, // Vim up
+            // 76: 1, // Vim right
+            // 74: 2, // Vim down
+            // 72: 3, // Vim left
+            // 87: 0, // W
+            // 68: 1, // D
+            // 83: 2, // S
+            // 65: 3  // A
           };
 
           let modifiers = event.altKey || event.ctrlKey || event.metaKey ||
@@ -267,6 +359,33 @@
             }
           }
         });
+
+        db.collection("hw_3")
+                .orderBy("score", "asc")
+                .onSnapshot(
+                snapshot => {
+                  let changes = snapshot.docChanges();
+                  changes.forEach(change => {
+                    if (change.type == "added") {
+                      this.items.push(change.doc.data());
+                    }
+                    else if (change.type == "removed") {
+                      for (let i=0; i < this.items.length; i++){
+                        if ( this.items[i].name === change.doc.data().name) {
+                          this.items.splice(i, 1);
+                        }
+                      }
+                    }
+                    else if (change.type === "modified") {
+                      for (let i=0; i < this.items.length; i++){
+                        if ( this.items[i].name === change.doc.data().name) {
+                          this.items[i] = change.doc.data();
+                        }
+                      }
+                    }
+                  })
+                }
+        )
 
       })
     }
