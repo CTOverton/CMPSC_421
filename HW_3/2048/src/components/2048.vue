@@ -1,8 +1,8 @@
 <template>
   <v-container>
     <v-layout
-      text-xs-center
-      wrap
+            text-xs-center
+            wrap
     >
 
       <v-layout
@@ -40,10 +40,10 @@
         </div>
       </v-layout>
 
-      <!--<v-flex xs12>-->
-        <!--<button v-on:click="start(1)">Add a year</button>-->
-        <!--<p>My age is {{ age }}</p>-->
-      <!--</v-flex>-->
+      <v-flex xs12>
+      <!--<button v-on:click="addTile()">Add a tile</button>-->
+      <p>Score {{ score }}</p>
+      </v-flex>
 
 
 
@@ -53,306 +53,41 @@
 
 <script>
 
-  // ========== [ Grid ] ==========
-  function Grid(size) {
-    this.size = size;
-    //this.cells = previousState ? this.fromState(previousState) : this.empty();
-    this.cells = this.empty();
-  }
-
-  // Build a grid of the specified size
-  Grid.prototype.empty = function () {
-    let cells = [];
-
-    for (let x = 0; x < this.size; x++) {
-      let row = cells[x] = [];
-
-      for (let y = 0; y < this.size; y++) {
-        row.push(null);
-      }
-    }
-
-    return cells;
-  };
-
-  Grid.prototype.fromState = function (state) {
-    let cells = [];
-
-    for (let x = 0; x < this.size; x++) {
-      let row = cells[x] = [];
-
-      for (let y = 0; y < this.size; y++) {
-        let tile = state[x][y];
-        row.push(tile ? new Tile(tile.position, tile.value) : null);
-      }
-    }
-
-    return cells;
-  };
-
-  Grid.prototype.eachCell = function (callback) {
-    for (let x = 0; x < this.size; x++) {
-      for (let y = 0; y < this.size; y++) {
-        callback(x, y, this.cells[x][y]);
-      }
-    }
-  };
-
-  Grid.prototype.randomAvailableCell = function () {
-    let cells = this.availableCells();
-
-    if (cells.length) {
-      return cells[Math.floor(Math.random() * cells.length)];
-    }
-  };
-
-  Grid.prototype.availableCells = function () {
-    let cells = [];
-
-    this.eachCell(function (x, y, tile) {
-      if (!tile) {
-        cells.push({ x: x, y: y });
-      }
-    });
-
-    return cells;
-  };
-
-  Grid.prototype.cellsAvailable = function () {
-    return !!this.availableCells().length;
-  };
-
-  Grid.prototype.addRandomTile = function() {
-    if (this.cellsAvailable()) {
-      let value = Math.random() < 0.9 ? 2 : 4;
-      let tile = new Tile(this.randomAvailableCell(), value);
-
-      this.insertTile(tile);
-    }
-  };
-
-  Grid.prototype.insertTile = function (tile) {
-    this.cells[tile.x][tile.y] = tile;
-  };
-
-  Grid.prototype.removeTile = function (tile) {
-    this.cells[tile.x][tile.y] = null;
-  };
-
-  Grid.prototype.withinBounds = function (position) {
-    return position.x >= 0 && position.x < this.size &&
-            position.y >= 0 && position.y < this.size;
-  };
-
-  Grid.prototype.start = function () {
-    this.empty();
-    this.addRandomTile();
-    this.addRandomTile();
-    return this.cells;
-  };
-
-  Grid.prototype.move = function (direction) {
-    let self = this;
-    let cells = this.cells;
-    console.log(direction);
-
-    let cell, tile;
-    let moved = false;
-    let vector = this.getVector(direction);
-    let traversals = { x: [], y: [] };
-
-    for (let pos = 0; pos < this.size; pos++) {
-      traversals.x.push(pos);
-      traversals.y.push(pos);
-    }
-
-    // Always traverse from the farthest cell in the chosen direction
-    if (vector.x === 1) traversals.x = traversals.x.reverse();
-    if (vector.y === 1) traversals.y = traversals.y.reverse();
-
-    // Traverse the grid in the right direction and move tiles
-    traversals.x.forEach(function (x) {
-      traversals.y.forEach(function (y) {
-        cell = { x: x, y: y };
-        tile = self.cells[cell.x][cell.y];
-
-        if (tile) {
-          let positions = self.findFarthestPosition(cell, vector);
-          let next      = self.cellContent(positions.next);
-
-          // Only one merger per row traversal?
-          if (next && next.value === tile.value && !next.mergedFrom) {
-            let merged = new Tile(positions.next, tile.value * 2);
-            merged.mergedFrom = [tile, next];
-
-            self.insertTile(merged);
-            self.removeTile(tile);
-
-            // Converge the two tiles' positions
-            tile.updatePosition(positions.next);
-
-            // Update the score
-            //TODO
-            //self.score += merged.value;
-
-            // The mighty 2048 tile
-            if (merged.value === 2048) self.won = true;
-          } else {
-            self.moveTile(tile, positions.farthest);
-          }
-
-          if (!self.positionsEqual(cell, tile)) {
-            moved = true; // The tile moved from its original cell!
-          }
-        }
-      });
-    });
-
-    if (moved) {
-      this.addRandomTile();
-
-      if (!this.movesAvailable()) {
-        //this.over = true; // Game over!
-      }
-
-      //this.actuate();
-    }
-
-    console.log(this.cells);
-    return this.cells;
-  };
-
-  Grid.prototype.movesAvailable = function () {
-    return this.cellsAvailable() || this.tileMatchesAvailable();
-  };
-
-  // Check for available matches between tiles (more expensive check)
-  Grid.prototype.tileMatchesAvailable = function () {
-    var self = this;
-
-    var tile;
-
-    for (var x = 0; x < this.size; x++) {
-      for (var y = 0; y < this.size; y++) {
-        tile = this.cellContent({ x: x, y: y });
-
-        if (tile) {
-          for (var direction = 0; direction < 4; direction++) {
-            var vector = self.getVector(direction);
-            var cell   = { x: x + vector.x, y: y + vector.y };
-
-            var other  = self.cellContent(cell);
-
-            if (other && other.value === tile.value) {
-              return true; // These two tiles can be merged
-            }
-          }
-        }
-      }
-    }
-
-    return false;
-  };
-
-  Grid.prototype.getVector = function (direction) {
-    // Vectors representing tile movement
-    let map = {
-      0: { x: 0,  y: -1 }, // Up
-      1: { x: 1,  y: 0 },  // Right
-      2: { x: 0,  y: 1 },  // Down
-      3: { x: -1, y: 0 }   // Left
-    };
-
-    return map[direction];
-  };
-
-  Grid.prototype.moveTile = function (tile, cell) {
-    this.cells[tile.x][tile.y] = null;
-    this.cells[cell.x][cell.y] = tile;
-    tile.updatePosition(cell);
-  };
-
-  Grid.prototype.cellAvailable = function (cell) {
-    return !this.cellOccupied(cell);
-  };
-
-  Grid.prototype.cellOccupied = function (cell) {
-    return !!this.cellContent(cell);
-  };
-
-  Grid.prototype.cellContent = function (cell) {
-    if (this.withinBounds(cell)) {
-      return this.cells[cell.x][cell.y];
-    } else {
-      return null;
-    }
-  };
-
-  Grid.prototype.findFarthestPosition = function (cell, vector) {
-    let previous;
-
-    // Progress towards the vector direction until an obstacle is found
-    do {
-      previous = cell;
-      cell     = { x: previous.x + vector.x, y: previous.y + vector.y };
-    } while (this.withinBounds(cell) &&
-    this.cellAvailable(cell));
-
-    return {
-      farthest: previous,
-      next: cell // Used to check if a merge is required
-    };
-  };
-
-  Grid.prototype.positionsEqual = function (first, second) {
-    return first.x === second.x && first.y === second.y;
-  };
-
-  // ========== [ Tile ] ==========
-  function Tile(position, value) {
-    this.x                = position.x;
-    this.y                = position.y;
-    this.value            = value || 2;
-
-    this.previousPosition = null;
-    this.mergedFrom       = null; // Tracks tiles that merged together
-  }
-
-  Tile.prototype.savePosition = function () {
-    this.previousPosition = { x: this.x, y: this.y };
-  };
-
-  Tile.prototype.updatePosition = function (position) {
-    this.x = position.x;
-    this.y = position.y;
-  };
-
-  Tile.prototype.serialize = function () {
-    return {
-      position: {
-        x: this.x,
-        y: this.y
-      },
-      value: this.value
-    };
-  };
-
-
   export default {
     data: function() {
       return {
-        grid: new Grid(4),
+        score: 0,
         cells: [
-                [null, null, null, null],
-                [null, null, null, null],
-                [null, null, null, null],
-                [null, null, null, null]
+          [null, null, null, null],
+          [null, null, null, null],
+          [null, null, null, null],
+          [null, null, null, null]
         ]
       };
     },
     methods: {
-      start: function() {
-        this.updateGrid(this.grid.start());
+      newGame: function() {
+        console.log('New Game');
+
+        this.cells = [
+          [null, null, null, null],
+          [null, null, null, null],
+          [null, null, null, null],
+          [null, null, null, null]
+        ];
+
+        this.addTile();
+        this.addTile();
+      },
+      addTile: function() {
+        let cells = this.cells;
+        let available = this.availableCells();
+        if (available.length) {
+          let cell = available[Math.floor(Math.random() * available.length)];
+          let value = Math.random() < 0.9 ? 2 : 4;
+          cells[cell.x][cell.y] = value;
+          this.updateGrid(cells);
+        }
       },
       updateGrid: function (state) {
         let cells = [];
@@ -361,21 +96,148 @@
           let row = cells[x] = [];
 
           for (let y = 0; y < 4; y++) {
-            let tile = state[x][y];
-            row.push(tile ? tile.value : null);
+            let value = state[x][y];
+            row.push(value ? value : null);
           }
         }
 
         this.cells = cells;
-
+      },
+      availableCells: function () {
+        let available = [];
+        for (let x=0; x < 4; x++){
+          for (let y=0; y < 4; y++){
+            if (this.cells[x][y] == null) {
+              available.push({ x: x, y: y });
+            }
+          }
+        }
+        return available;
+      },
+      move: function(direction) {
+        switch (direction) {
+          case 0: this.moveUp(); break;
+          case 1: this.moveRight(); break;
+          case 2: this.moveDown(); break;
+          case 3: this.moveLeft(); break;
+          default: break;
+        }
+      },
+      moveRight: function() {
+        let cells = this.cells;
+        let i, j, col;
+        for(i = 0; i < 4; i++) {
+          for(j = 4 - 2; j >= 0; j--) {
+            if(cells[i][j]) {
+              col = j;
+              while (col + 1 < 4) {
+                if (!cells[i][col + 1]) {
+                  cells[i][col + 1] = cells[i][col];
+                  cells[i][col] = 0;
+                  col++;
+                } else if (cells[i][col] == cells[i][col + 1]) {
+                  cells[i][col + 1] *= 2;
+                  this.score +=  cells[i][col + 1];
+                  cells[i][col] = 0;
+                  break;
+                } else {
+                  break;
+                }
+              }
+            }
+          }
+        }
+        this.addTile();
+        this.updateGrid(cells);
+      },
+      moveLeft: function() {
+        let cells = this.cells;
+        let i, j, col;
+        for(i = 0; i < 4; i++) {
+          for(j = 1; j < 4; j++) {
+            if(cells[i][j]) {
+              col = j;
+              while (col - 1 >= 0) {
+                if (!cells[i][col - 1]) {
+                  cells[i][col - 1] = cells[i][col];
+                  cells[i][col] = 0;
+                  col--;
+                } else if (cells[i][col] == cells[i][col - 1]) {
+                  cells[i][col - 1] *= 2;
+                  this.score +=   cells[i][col - 1];
+                  cells[i][col] = 0;
+                  break;
+                } else {
+                  break;
+                }
+              }
+            }
+          }
+        }
+        this.addTile();
+        this.updateGrid(cells);
+      },
+      moveUp: function() {
+        let cells = this.cells;
+        let i, j, row;
+        for(j = 0; j < 4; j++) {
+          for(i = 1; i < 4; i++) {
+            if(cells[i][j]) {
+              row = i;
+              while (row > 0) {
+                if(!cells[row - 1][j]) {
+                  cells[row - 1][j] = cells[row][j];
+                  cells[row][j] = 0;
+                  row--;
+                } else if (cells[row][j] == cells[row - 1][j]) {
+                  cells[row - 1][j] *= 2;
+                  this.score +=  cells[row - 1][j];
+                  cells[row][j] = 0;
+                  break;
+                } else {
+                  break;
+                }
+              }
+            }
+          }
+        }
+        this.addTile();
+        this.updateGrid(cells);
+      },
+      moveDown: function() {
+        let cells = this.cells;
+        let i, j, row;
+        for(j = 0; j < 4; j++) {
+          for(i = 4 - 2; i >= 0; i--) {
+            if(cells[i][j]) {
+              row = i;
+              while (row + 1 < 4) {
+                if (!cells[row + 1][j]) {
+                  cells[row + 1][j] = cells[row][j];
+                  cells[row][j] = 0;
+                  row++;
+                } else if (cells[row][j] == cells[row + 1][j]) {
+                  cells[row + 1][j] *= 2;
+                  this.score +=  cells[row + 1][j];
+                  cells[row][j] = 0;
+                  break;
+                } else {
+                  break;
+                }
+              }
+            }
+          }
+        }
+        this.addTile();
+        this.updateGrid(cells);
       }
+
     },
     mounted: function () {
       this.$nextTick(function () {
-        let grid = this.grid;
-        let that = this;
+        this.newGame();
 
-        this.start();
+        let that = this;
 
         // Handle Key Events
         document.addEventListener("keyup", function(event) {
@@ -394,17 +256,18 @@
             65: 3  // A
           };
 
-          var modifiers = event.altKey || event.ctrlKey || event.metaKey ||
+          let modifiers = event.altKey || event.ctrlKey || event.metaKey ||
                   event.shiftKey;
-          var mapped    = map[event.which];
+          let mapped    = map[event.which];
 
           if (!modifiers) {
             if (mapped !== undefined) {
               event.preventDefault();
-              that.updateGrid(grid.move(mapped));
+              that.move(mapped);
             }
           }
         });
+
       })
     }
   }
