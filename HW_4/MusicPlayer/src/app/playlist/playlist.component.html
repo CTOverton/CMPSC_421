@@ -1,0 +1,15 @@
+<div class="List-Header">
+  <div>Title</div>
+  <div>Artist</div>
+  <div>Album</div>
+  <div>Length</div>
+</div>
+<ul>
+  <li *ngFor="let song of songs">
+    <div (dblclick)="songdlbClicked(song)">
+      <span>{{song.title}}</span>
+      <span>{{song.artist}}</span>
+      <span>{{song.length}}</span>
+    </div>
+  </li>
+</ul>

@@ -1,0 +1,30 @@
+<div class="now-playing-bar">
+  <div class="now-playing-bar_left">
+    <div class="art"></div>
+    <div class="info">
+      <div class="song">{{songInfo.title}}</div>
+      <div class="artist">{{songInfo.artist}}</div>
+    </div>
+  </div>
+  <div class="now-playing-bar_center">
+    <div class="player-controls">
+      <div class="buttons">
+        <div class="shuffle btn"></div>
+        <div class="prev btn"></div>
+        <div class="playpause btn" (click)="playPause()"></div>
+        <div class="next btn"></div>
+        <div class="repeat btn"></div>
+      </div>
+      <div class="playhead">
+        <div class="time">1:45</div>
+        <div class="progress" (mousedown)="mousedown()">
+          <div class="progress-current" [style.width]="progress + '%'"></div>
+        </div>
+        <div class="length">2:36</div>
+      </div>
+    </div>
+  </div>
+  <div class="now-playing-bar_right">
+
+  </div>
+</div>
