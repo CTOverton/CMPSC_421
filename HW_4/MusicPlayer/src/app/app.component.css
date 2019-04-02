@@ -1,0 +1,27 @@
+nav {
+  height: 100%;
+  width: 160px;
+  position: fixed;
+  top: 0;
+  left: 0;
+  background: rgba(0,0,0,0.8);
+  overflow-x: hidden;
+  padding-top: 20px;
+  color: #b3b3b3;
+}
+
+li {
+  padding: 10px;
+  list-style: none;
+}
+
+a {
+  font-size: 20px;
+  color: #b3b3b3;
+  text-decoration: none;
+}
+
+a:hover {
+  transition: color 0.2s;
+  color: #FFF;
+}

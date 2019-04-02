@@ -1,15 +1,17 @@
-<div class="List-Header">
-  <div>Title</div>
-  <div>Artist</div>
-  <div>Album</div>
-  <div>Length</div>
+<div class="center">
+  <div class="container">
+    <ul>
+      <li class="trackList-row" *ngFor="let song of songs" (dblclick)="songdlbClicked(song)">
+        <div class="trackList-col name">
+          <div class="title">{{song.title}}</div>
+          <div class="subtitle">{{song.artist}}</div>
+        </div>
+        <div class="trackList-col">
+          <div class="subtitle">{{song.length}}</div>
+        </div>
+      </li>
+    </ul>
+  </div>
 </div>
-<ul>
-  <li *ngFor="let song of songs">
-    <div (dblclick)="songdlbClicked(song)">
-      <span>{{song.title}}</span>
-      <span>{{song.artist}}</span>
-      <span>{{song.length}}</span>
-    </div>
-  </li>
-</ul>
+
+

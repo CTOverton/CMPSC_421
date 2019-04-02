@@ -1,0 +1,22 @@
+.center {
+  padding: 5px;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.container {
+  width: 600px;
+  color: #b3b3b3;
+}
+
+a {
+  font-size: 20px;
+  color: #b3b3b3;
+  text-decoration: none;
+}
+
+a:hover {
+  transition: color 0.2s;
+  color: #FFF;
+}

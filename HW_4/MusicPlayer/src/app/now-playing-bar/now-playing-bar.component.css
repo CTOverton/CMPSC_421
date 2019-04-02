@@ -27,14 +27,23 @@
 }
 
 .art {
-  width: 56px;
-  height: 56px;
-  margin: 10px;
+  height: 90px;
+  width: 90px;
+  margin: 0px;
   background: #000;
 }
 
 .info {
   color: #ebebeb;
+  margin: 10px;
+}
+
+.title {
+  color: #fff;
+}
+
+.subtitle {
+  color: #b3b3b3;
 }
 
 .btn {
@@ -46,28 +55,46 @@
 
 .playhead {
   display: flex;
-
-  color: white;
-  /*background: #fff;*/
-  /*height: 20px;*/
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  color: #b3b3b3;
 }
 
 .playhead .time {
-  width: 10%;
+  text-transform: none;
+  line-height: 16px;
+  letter-spacing: .015em;
+  min-width: 40px;
+  text-align: center;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  vertical-align: baseline;
 }
 
 .playhead .progress {
   width: 80%;
-  height: 10px;
+  height: 4px;
+  border-radius: 2px;
   background: rgba(0, 0, 0, 0.2);
 }
 
 .playhead .progress-current {
   /*width: 70%;*/
-  height: 10px;
+  height: 4px;
+  border-radius: 2px;
   background: rgb(0, 255, 248);
 }
 
 .playhead .length {
-  width: 10%;
+  text-transform: none;
+  line-height: 16px;
+  letter-spacing: .015em;
+  min-width: 40px;
+  text-align: center;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  vertical-align: baseline;
 }
