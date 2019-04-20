@@ -1,0 +1,12 @@
+.tower {
+    width: 50px;
+    height: 50px;
+    padding: 10px;
+    border: 1px solid grey;
+}
+
+.target {
+    width: 50px;
+    height: 50px;
+    border: 1px solid grey;
+}
