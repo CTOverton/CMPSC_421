@@ -11,8 +11,8 @@ const navbar = () => {
                     <li><NavLink to="/">Home</NavLink></li>
                     <li><NavLink to="/towers of hanoi">Towers of Hanoi</NavLink></li>
                     <li><NavLink to="/slide puzzle">Slide Puzzle</NavLink></li>
-                    <li><NavLink to="/riddle">Chicken, Fox, Grain Riddle</NavLink></li>
-                    <li><NavLink to="/chess">Chess</NavLink></li>
+                    <li><NavLink to="/riddle">Riddle</NavLink></li>
+                    {/*<li><NavLink to="/chess">Chess</NavLink></li>*/}
                 </ul>
             </nav>
 

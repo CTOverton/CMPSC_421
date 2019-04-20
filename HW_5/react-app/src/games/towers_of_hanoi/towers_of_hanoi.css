@@ -1,12 +1,41 @@
+.game-container {
+    display: flex;
+    margin-top: 20px;
+}
+
 .tower {
-    width: 50px;
-    height: 50px;
+    width: 100%;
+    height: 200px;
     padding: 10px;
     border: 1px solid grey;
+    display: flex;
+    flex-direction: column;
 }
 
 .target {
-    width: 50px;
-    height: 50px;
-    border: 1px solid grey;
+    width: 100%;
+    height: 200px   ;
+    /*border: 1px solid grey;*/
+}
+
+.ring {
+    height: 100px;
+}
+
+.ring1 {
+    margin: 0 40%;
+    background: #888;
+}
+
+.ring2 {
+    margin: 0 20%;
+    background: #444;
+}
+
+.ring3 {
+    background: #000;
+}
+
+li {
+    text-align: left;
 }

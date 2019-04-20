@@ -71,14 +71,26 @@ class towers_of_hanoi extends Component {
     render() {
         return (
             <div>
-                {this.state.towers.map((item, index) => (
-                    <Target key={index} handleDrop={(from, to) => {
-                        this.moveRing(from, to);
-                    }}>
-                        <Tower key={item.id} item={{item}}/>
-                    </Target>
-                ))}
-                <p>{(this.state.win) ? 'You win!' : ''}</p>
+                <div className="container">
+                    <h1>Towers of Hanoi</h1>
+                    <p>The objective of the puzzle is to move the entire stack to the last tower, obeying the following simple rules:</p>
+                    <ul>
+                        <li>- Only one disk can be moved at a time.</li>
+                        <li>- Each move consists of taking the upper disk from one of the stacks and placing it on top of another stack or on an empty tower.</li>
+                        <li>- No larger disk may be placed on top of a smaller disk.</li>
+                    </ul>
+
+                    <div className="game-container">
+                        {this.state.towers.map((item, index) => (
+                            <Target key={index} handleDrop={(from, to) => {
+                                this.moveRing(from, to);
+                            }}>
+                                <Tower key={item.id} item={{item}}/>
+                            </Target>
+                        ))}
+                    </div>
+                    <p>{(this.state.win) ? 'You win!' : ''}</p>
+                </div>
             </div>
         )
     }
