@@ -2,6 +2,7 @@ import {Injectable, Output} from '@angular/core';
 import Song from "./models/Song";
 import {SongsService} from "./songs.service";
 import {Howl} from 'howler';
+import {Subject} from "rxjs";
 
 
 @Injectable({
@@ -24,6 +25,12 @@ export class MusicService {
       title: "No Title"
     };
   }
+
+  // Observable string sources
+  private playPauseBtn = new Subject<any>();
+
+  // Observable string streams
+  playPauseBtn$ = this.playPauseBtn.asObservable();
 
   init() {
     let that = this;
@@ -66,6 +73,14 @@ export class MusicService {
     this.songInfo.fileName = s.fileName;
   }
 
+  updatePlayPauseBtn() {
+    if (this.playing) {
+      this.playPauseBtn.next('pause_circle_outline');
+    } else {
+      this.playPauseBtn.next('play_circle_outline')
+    }
+  }
+
   playSong(s) {
     if (this.playing) {
       this.song.stop();
@@ -74,6 +89,7 @@ export class MusicService {
     this.setSong(s);
     this.playing = true;
     this.song.play();
+    this.updatePlayPauseBtn();
   }
 
   playPause() {
@@ -90,6 +106,24 @@ export class MusicService {
       this.song.play();
       this.playing = true;
     }
+    this.updatePlayPauseBtn();
   }
 
+  skip(direction: string) {
+    let songID = 0;
+    if (direction == 'prev') {
+      let index = this.songInfo.id - 1;
+      if (index < 0) {
+        songID = this.songs.length - 1;
+      } else if (index >= 0 && index < this.songs.length) {
+        songID = index;
+      }
+    } else {
+      let index = this.songInfo.id + 1;
+      if (index > 0 && index < this.songs.length) {
+        songID = index;
+      }
+    }
+    this.playSong(this.songs[songID]);
+  }
 }

@@ -1,5 +1,4 @@
-import {Component, Input, OnInit} from '@angular/core';
-import {Howl} from 'howler';
+import {Component, OnInit} from '@angular/core';
 import Song from "../models/Song"
 import {SongsService} from "../songs.service";
 import {MusicService} from "../music.service";
@@ -13,11 +12,18 @@ export class NowPlayingBarComponent implements OnInit {
 
   isActive: boolean;
   progress: number = 10;
-  song: any = this.musicService.getSong();
   songInfo: Song;
+
+  playIcon = 'play_circle_outline';
 
   constructor(private songService: SongsService, private musicService: MusicService) {
     this.songInfo = musicService.songInfo;
+
+    this.musicService.playPauseBtn$.subscribe(
+      (data) => {
+        this.playIcon = data;
+      }
+    );
   }
 
   ngOnInit() {
@@ -26,7 +32,6 @@ export class NowPlayingBarComponent implements OnInit {
 
   playPause() {
     this.musicService.playPause();
-    console.log(this)
   }
 
   mousedown() {
@@ -48,6 +53,7 @@ export class NowPlayingBarComponent implements OnInit {
     } else if (mouse > box.right) {
       this.progress = 100;
     }
+    console.log(this.progress)
   }
 
   mouseUp(self, $event: Event) {
@@ -56,5 +62,9 @@ export class NowPlayingBarComponent implements OnInit {
       window.removeEventListener('mousemove', self.moveplayhead, true);
     }
     self.isActive = false;
+  }
+
+  skip(direction: string) {
+    this.musicService.skip(direction);
   }
 }

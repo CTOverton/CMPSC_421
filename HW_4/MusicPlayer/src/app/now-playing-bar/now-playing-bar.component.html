@@ -11,11 +11,17 @@
   <div class="now-playing-bar_center">
     <div class="player-controls">
       <div class="buttons">
-        <div class="shuffle btn"></div>
-        <div class="prev btn"></div>
-        <div class="playpause btn" (click)="playPause()"></div>
-        <div class="next btn"></div>
-        <div class="repeat btn"></div>
+<!--        <div class="shuffle btn"></div>-->
+        <div class="prev btn" (click)="skip('prev')">
+          <i class="material-icons">skip_previous</i>
+        </div>
+        <div class="playpause btn" (click)="playPause()">
+          <i class="material-icons">{{playIcon}}</i>
+        </div>
+        <div class="next btn" (click)="skip('next')">
+          <i class="material-icons">skip_next</i>
+        </div>
+<!--        <div class="repeat btn"></div>-->
       </div>
       <div class="playhead">
         <div class="time">1:45</div>

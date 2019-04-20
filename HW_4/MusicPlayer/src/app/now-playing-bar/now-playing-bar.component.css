@@ -24,6 +24,12 @@
 .buttons {
   display: flex;
   justify-content: center;
+  text-align: center
+}
+
+i {
+  color: #FFF;
+  font-size: 32px;
 }
 
 .art {
@@ -50,7 +56,7 @@
   width: 40px;
   height: 40px;
   margin: 10px;
-  background: rgba(0, 0, 0, 0.2);
+  cursor: pointer;
 }
 
 .playhead {
